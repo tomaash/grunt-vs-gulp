@@ -64,17 +64,32 @@ class: center, middle
 ## Grunt
 
 ```javascript
-function add(a, b)
-  return a + b
-end
+grunt.initConfig({
+  pkg: grunt.file.readJSON('package.json'),
+  jshint: {
+    src: ['src/**/*.js', '!src/**/*.spec.js'],
+    options: {
+      jshintrc: '.jshintrc' }},
+  concat: {
+    src: '<%= jshint.src %>',
+    dest: 'dist/<%= pkg.name %>.js' },
+});
+grunt.registerTask('default', ['jshint', 'concat']);
 ```
 ]
 .pull-right[
 ## Gulp
+
 ```javascript
-def add(a, b)
-  a + b
-end
+var pkg = require('./package.json');
+gulp.task('default', function() {
+  gulp.src(['src/**/*.js', '!src/**/*.spec.js'])
+    .pipe(jshint())
+    .pipe(jshint.reporter('jshint-stylish'))
+    .pipe(jshint.reporter('fail'))
+    .pipe(concat(pkg.name + '.js'))
+    .pipe(gulp.dest('dist');
+});
 ```
 ]
 
