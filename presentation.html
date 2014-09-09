@@ -15,11 +15,11 @@
       }
       .pull-left {
         float: left;
-        width: 47%;
+        width: 49%;
       }
       .pull-right {
         float: right;
-        width: 47%;
+        width: 49%;
       }
       .subtitle {
         margin-top: -45px
@@ -35,6 +35,11 @@
         clear: both;
       }
       .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
+
+      .remark-slide-content {
+        padding: 1em 1em 1em 1em !important;
+      }
+
     </style>
   </head>
   <body>
@@ -65,14 +70,17 @@ class: center, middle
 grunt.initConfig({
   pkg: grunt.file.readJSON('package.json'),
   jshint: {
-    src: ['src/**/*.js', '!src/**/*.spec.js'],
+    src: [
+      'src/**/*.js',
+      '!src/**/*.spec.js'],
     options: {
       jshintrc: '.jshintrc' }},
   concat: {
     src: '<%= jshint.src %>',
     dest: 'dist/<%= pkg.name %>.js' },
 });
-grunt.registerTask('default', ['jshint', 'concat']);
+grunt.registerTask('default',
+  ['jshint', 'concat']);
 ```
 ]
 .pull-right.subtitle[
@@ -81,7 +89,9 @@ grunt.registerTask('default', ['jshint', 'concat']);
 ```javascript
 var pkg = require('./package.json');
 gulp.task('default', function() {
-  gulp.src(['src/**/*.js', '!src/**/*.spec.js'])
+  gulp.src([
+      'src/**/*.js',
+      '!src/**/*.spec.js'])
     .pipe(jshint())
     .pipe(jshint.reporter('jshint-stylish'))
     .pipe(jshint.reporter('fail'))
