@@ -93,7 +93,6 @@
   </head>
   <body>
     <textarea id="source">
-
 class: center, middle
 .title[
 Grunt vs. Gulp
@@ -357,30 +356,31 @@ module.exports = function(grunt) {
   ### - Multiple tasks
 ]
 .right-column[
+
 ```javascript
 module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
-    concat: {
+*    concat: {
       dist: {
         src: ['src/**/*.js'],
         dest: 'dist/<%= pkg.name %>.js'
       }
     },
-    uglify: {
+*    uglify: {
       dist: {
         files: {
           'dist/<%= pkg.name %>.min.js': ['<%= concat.dist.dest %>']
         }
       }
     },
-    qunit: {
+*    qunit: {
       files: ['test/**/*.html']
     },
-    jshint: {
+*    jshint: {
       files: ['Gruntfile.js', 'src/**/*.js', 'test/**/*.js'],
     },
-    watch: {
+*    watch: {
       files: ['<%= jshint.files %>'],
       tasks: ['jshint', 'qunit']
     }
@@ -433,7 +433,6 @@ gulp.task('default', function() {
 });
 ```
 ]
-
     </textarea>
     <script src="http://gnab.github.io/remark/downloads/remark-latest.min.js" type="text/javascript">
     </script>
