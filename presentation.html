@@ -5,10 +5,10 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <style type="text/css">
       @import url(http://fonts.googleapis.com/css?family=Oswald);
-      @import url(http://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic);
-      @import url(http://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+      @import url(http://fonts.googleapis.com/css?family=Roboto+Slab);
+      @import url(http://fonts.googleapis.com/css?family=Ubuntu+Mono);
 
-      body { font-family: 'Droid Serif'; }
+      body { font-family: 'Roboto Slab'; }
       h1, h2, h3 {
         font-family: 'Oswald';
         font-weight: bold;
@@ -17,11 +17,20 @@
       .remark-slide-content h1 { font-size: 2.5em; }
       .remark-slide-content h2 { font-size: 1.5em; }
       .remark-slide-content h3 { font-size: 1em; }
-
+      .bigger-text {
+        font-size: 1.5em;
+      }
+      .bigger-text li {
+        padding-bottom: 0.5em;
+      }
       .title {
         font-size: 4em;
       }
       .subtitle {
+        font-size: 3em;
+      }
+      .nametitle {
+        font-family: 'Roboto Slab';
         font-size: 3em;
       }
       .subsubtitle {
@@ -63,6 +72,19 @@
       .move-left {
         margin-left: -7em;
       }
+      .move-bottom {
+        margin-top: 3em;
+      }
+      .move-top {
+        margin-top: -2em;
+      }
+
+      .bottom-right {
+        position: absolute;
+        bottom: 0.5em;
+        right: 0.5em;
+      }
+
       .pull-right ~ p {
         clear: both;
       }
@@ -71,6 +93,17 @@
       .remark-slide-content {
         padding: 1em 1em 1em 1em !important;
       }
+
+      /* Slide specific */
+      .mega-grunt {
+        color: white;
+        background-image: url('mega-grunt.png');
+      }
+      .grunt-gulp {
+        background: white url('grunt-vs-gulp.jpg') no-repeat right 0px;
+        background-size: 40%;
+      }
+      /* End Slide specific */
 
        /* Two-column layout */
       .left-column {
@@ -103,7 +136,6 @@ Evoluce build systémů
 .vertical-spacer[
 
 ]
-
 # Tomáš Holas
 .vertical-spacer[
 
@@ -275,7 +307,7 @@ task 'build', 'Build single application file from source files', ->
 ]
 ---
 template: inverse
-# Grunt
+# Mr. Grunt
 ---
 class: center
 # Grunt: Industry standard
@@ -393,45 +425,98 @@ module.exports = function(grunt) {
 ]
 ---
 template: inverse
-# Case Study
+# The Case Study
 ---
-# Syntaxe
+class: mega-grunt
+# "Enterprise" Gruntfile
+---
+class: mega-grunt
+# "Enterprise" Gruntfile
+.bottom-right[
+<img src="doge-grunt.jpg">
+]
+---
+class: grunt-gulp
+.move-top[
+# Gulp to the rescue!
+]
 .pull-left[
 ## Grunt
-
 ```javascript
 grunt.initConfig({
-  pkg: grunt.file.readJSON('package.json'),
-  jshint: {
-*    src: [
-      'src/**/*.js',
-      '!src/**/*.spec.js'],
-    options: {
-      jshintrc: '.jshintrc' }},
-  concat: {
-*    src: '<%= jshint.src %>',
-*    dest: 'dist/<%= pkg.name %>.js' },
-});
+*  jade: {
+    compile: {
+      files: [
+        {
+          cwd: "templates",
+          src: "**/*.jade",
+          dest: "build/templates",
+          ext: ".html"
+  }]}},
+*  coffee: {
+    compile: {
+      files: {
+        'build/app.js':"scripts/**/*.coffee"
+  }}},
+*  watch: {
+    templates: {
+      files: ["**/*.jade"],
+      tasks: ['jade']
+  }}});
+grunt.registerTask('compile',
+  ['jade', 'coffee']);
 grunt.registerTask('default',
-  ['jshint', 'concat']);
+  ['compile', 'watch']);
 ```
 ]
-.pull-right[
+.pull-right.move-bottom[
 ## Gulp
 
 ```javascript
-var pkg = require('./package.json');
-gulp.task('default', function() {
-*  gulp.src([
-      'src/**/*.js',
-      '!src/**/*.spec.js'])
-    .pipe(jshint())
-    .pipe(jshint.reporter('jshint-stylish'))
-    .pipe(jshint.reporter('fail'))
-    .pipe(concat(pkg.name + '.js'))
-*    .pipe(gulp.dest('dist');
+var gulp = require('gulp');
+var jade = require('gulp-jade');
+var coffee = require('gulp-jade');
+var concat = require('gulp-concat');
+*gulp.task('jade', function() {
+  gulp.src('pages/**/*.jade',{base:'./pages'})
+  .pipe(jade())
+  .pipe(gulp.dest('build/pages'));
 });
+*gulp.task('coffee', function() {
+  gulp.src('./scripts/*.coffee')
+  .pipe(coffee({bare: true}))
+  .pipe(concat('app.js'))
+  .pipe(gulp.dest('./build'));
+});
+gulp.task('compile', ['jade','coffee']);
+*gulp.task('watch', ['compile'], function() {
+  gulp.watch('pages/**/*.jade',['compile']);
+});
+gulp.task('default', ['watch']);
 ```
+]
+---
+.bigger-text[
+.pull-left[
+<img class="center" height="200px" src="grunt-logo.png">
+.move-bottom[
+* Task runner
+* Configuration over code
+* Filesystem based
+* "Kitchen sink"
+* 3600+ plugins
+]
+]
+.pull-right[
+<img class="center" height="200px"  src="gulp-logo.png">
+.move-bottom[
+* Build system
+* Code over configuration
+* Stream based
+* Unix-like
+* 700+ plugins
+]
+]
 ]
     </textarea>
     <script src="http://gnab.github.io/remark/downloads/remark-latest.min.js" type="text/javascript">
