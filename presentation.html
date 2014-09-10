@@ -38,6 +38,9 @@
       .pull-right ~ p {
         clear: both;
       }
+      .center {
+        margin: auto;
+      }
       #slideshow .slide .content code {
         font-size: 0.8em;
       }
@@ -55,12 +58,11 @@
         line-height: 0.8em;
       }
       .vertical-spacer {
-        padding-top: 40px
+        padding-top: 4em;
       }
-      .center {
-        margin: auto
+      .move-left {
+        margin-left: -7em;
       }
-
       .pull-right ~ p {
         clear: both;
       }
@@ -109,18 +111,25 @@ Evoluce build systémů
 ]
 <img src="logo-socialbakers.jpg" width="30%">
 ---
+name: inverse
+layout: true
+class: center, middle, inverse
+---
+# Le History
+---
+layout: false
 .left-column[
-  ## Historie
-  ### - Vanilla
+  ## History
+  ### - Vanilla everything
 ]
 .right-column.center.middle[
-<img src="meditation.jpg" width="70%">
+<img class="move-left" src="meditation.jpg" width="70%">
 ]
 ---
 .left-column[
-  ## Historie
-  ### - Vanilla
-  ### - Framework
+  ## History
+  ### - Vanilla everything
+  ### - Preprocessors
 ]
 .right-column[
 ## HAML
@@ -154,12 +163,94 @@ body
 ]
 ---
 .left-column[
-  ## Historie
-  ### - Vanilla
-  ### - Framework
+  ## History
+  ### - Vanilla everything
+  ### - Preprocessors
+  ### - Bash scripts
 ]
 .right-column[
-# Asset pipeline
+## Command line tools
+```bash
+coffee --watch --compile --output lib/ src/
+sass --watch app/sass:public/stylesheets
+jade --watch foo bar --out /tmp
+```
+## Example script
+```bash
+#!/bin/bash
+# Make sure that the 'sass' command exists
+command -v sass >/dev/null 2>&1 || {
+  echo >&2 "SASS not available. Unable to re-compile stylesheets";
+  exit 1;
+}
+
+# Define our paths and stylesheets
+echo "Re-compiling stylesheets..."
+cd wp-content/themes/grunwell2012/css/
+
+sass style.scss style.css --style compressed
+echo "style.scss -> style.css (compressed)"
+
+sass ie8.scss ie8.css --style compressed
+echo "ie8.scss -> ie8.css (compressed)"
+
+echo "Sassification is complete"
+exit 0
+```
+
+]
+---
+.left-column[
+  ## History
+  ### - Vanilla everything
+  ### - Preprocessors
+  ### - Bash scripts
+  ### - Makefiles
+]
+.right-column[
+## CoffeeScript's cakefile
+```coffeescript
+task 'watch', 'Watch prod source files and build changes', ->
+    invoke 'build'
+    util.log "Watching for changes in src"
+
+    for file in appFiles then do (file) ->
+        fs.watchFile file, (curr, prev) ->
+            if +curr.mtime isnt +prev.mtime
+                util.log "Saw change in #{file}"
+                grrrr 'Whoa. Saw a change. Building. Hold plz.'
+                invoke 'build'
+
+task 'build', 'Build single application file from source files', ->
+  invoke 'coffeeFiles'
+  appContents = new Array remaining = appFiles.length
+  for file, index in appFiles then do (file, index) ->
+    fs.readFile file, 'utf8', (err, fileContents) ->
+      throw err if err
+      appContents[index] = fileContents
+      process() if --remaining is 0
+  process = ->
+    fs.writeFile 'public/app.coffee', appContents.join('\n\n'), 'utf8',
+    (err) ->
+      throw err if err
+      exec 'coffee --compile public/app.coffee',
+      (err, stdout, stderr) ->
+        if err
+          util.log 'Error compiling coffee file.'
+          grrrr 'Uh, your coffee is bad.'
+```
+]
+---
+.left-column[
+  ## History
+  ### - Vanilla everything
+  ### - Preprocessors
+  ### - Bash scripts
+  ### - Makefiles
+  ### - Framework support
+]
+.right-column[
+## Asset pipeline
 ### CSS
 ```css
 /**
@@ -183,6 +274,126 @@ body
 <%= javascript_include_tag "application" %>
 ```
 ]
+---
+template: inverse
+# Grunt
+---
+class: center
+# Grunt: Industry standard
+.vertical-spacer[
+
+]
+<img src="yo-grunt-bower.jpg" >
+---
+.left-column[
+  ## Grunt Howto
+  ### - Installation
+]
+.right-column[
+## Global Grunt
+```bash
+$ npm install -g grunt-cli
+```
+## package.json
+```javascript
+{
+    "name" : "SampleGrunt",
+    "version" : "0.1.0",
+    "author" : "Brandon Random",
+
+    "devDependencies" : {
+        "grunt" : "~0.4.0",
+        "grunt-contrib-concat": "*",
+        "grunt-contrib-uglify": "*",
+        "grunt-contrib-watch": "*",
+    }
+}
+```
+## Install packages
+```bash
+$ npm install
+```
+]
+---
+.left-column[
+  ## Grunt Howto
+  ### - Installation
+  ### - Basic configuration
+]
+.right-column[
+## Gruntfile.js
+```javascript
+module.exports = function(grunt) {
+
+    // All configuration goes here
+    grunt.initConfig({
+        // Read info from package file
+        pkg: grunt.file.readJSON('package.json'),
+        concat: {
+            dist: {
+                src: [
+                    'js/libs/*.js', // All JS in the libs folder
+                    'js/global.js'  // This specific file
+                ],
+                dest: 'js/build/production.js',
+            }
+        }
+    });
+
+    // Load task from plug-in.
+    grunt.loadNpmTasks('grunt-contrib-concat');
+
+    // Register default command
+    grunt.registerTask('default', ['concat']);
+
+};
+```
+]
+---
+.left-column[
+  ## Grunt Howto
+  ### - Installation
+  ### - Basic configuration
+  ### - Multiple tasks
+]
+.right-column[
+```javascript
+module.exports = function(grunt) {
+  grunt.initConfig({
+    pkg: grunt.file.readJSON('package.json'),
+    concat: {
+      dist: {
+        src: ['src/**/*.js'],
+        dest: 'dist/<%= pkg.name %>.js'
+      }
+    },
+    uglify: {
+      dist: {
+        files: {
+          'dist/<%= pkg.name %>.min.js': ['<%= concat.dist.dest %>']
+        }
+      }
+    },
+    qunit: {
+      files: ['test/**/*.html']
+    },
+    jshint: {
+      files: ['Gruntfile.js', 'src/**/*.js', 'test/**/*.js'],
+    },
+    watch: {
+      files: ['<%= jshint.files %>'],
+      tasks: ['jshint', 'qunit']
+    }
+  });
+  grunt.loadNpmTasks('grunt-contrib-concat'); // other tasks omitted
+  grunt.registerTask('test',['jshint','qunit']);
+  grunt.registerTask('default',['jshint','qunit','concat','uglify']);
+};
+```
+]
+---
+template: inverse
+# Case Study
 ---
 # Syntaxe
 .pull-left[
