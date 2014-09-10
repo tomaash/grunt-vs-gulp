@@ -4,14 +4,28 @@
     <title>Title</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <style type="text/css">
-      @import url(http://fonts.googleapis.com/css?family=Roboto);
+      @import url(http://fonts.googleapis.com/css?family=Oswald);
       @import url(http://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic);
       @import url(http://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
 
       body { font-family: 'Droid Serif'; }
       h1, h2, h3 {
-        font-family: 'Roboto';
+        font-family: 'Oswald';
         font-weight: bold;
+        margin-bottom: 0;
+      }
+      .remark-slide-content h1 { font-size: 2.5em; }
+      .remark-slide-content h2 { font-size: 1.5em; }
+      .remark-slide-content h3 { font-size: 1em; }
+
+      .title {
+        font-size: 4em;
+      }
+      .subtitle {
+        font-size: 3em;
+      }
+      .subsubtitle {
+        font-size: 2.5em;
       }
       .pull-left {
         float: left;
@@ -21,11 +35,27 @@
         float: right;
         width: 49%;
       }
-      .subtitle {
-        margin-top: -45px
+      .pull-right ~ p {
+        clear: both;
+      }
+      #slideshow .slide .content code {
+        font-size: 0.8em;
+      }
+      #slideshow .slide .content pre code {
+        font-size: 0.9em;
+        padding: 15px;
+      }
+      .inverse {
+        background: #272822;
+        color: #777872;
+        text-shadow: 0 0 20px #333;
+      }
+      .inverse h1, .inverse h2 {
+        color: #f3f3f3;
+        line-height: 0.8em;
       }
       .vertical-spacer {
-        padding-top: 30px
+        padding-top: 40px
       }
       .center {
         margin: auto
@@ -40,73 +70,164 @@
         padding: 1em 1em 1em 1em !important;
       }
 
+       /* Two-column layout */
+      .left-column {
+        color: #777;
+        width: 25%;
+        height: 92%;
+        float: left;
+      }
+      .left-column h2:last-of-type, .left-column h3:last-child {
+          color: #000;
+      }
+
+      .right-column {
+        width: 75%;
+        float: right;
+        /*padding-top: 0.5em;*/
+      }
+
     </style>
   </head>
   <body>
     <textarea id="source">
 
 class: center, middle
-
-# Grunt vs. Gulp
-.subtitle[
-## Evoluce build systémů
+.title[
+Grunt vs. Gulp
+]
+.subsubtitle[
+Evoluce build systémů
 ]
 .vertical-spacer[
 
 ]
+
 # Tomáš Holas
 .vertical-spacer[
 
 ]
 <img src="logo-socialbakers.jpg" width="30%">
-
 ---
+.left-column[
+  ## Historie
+  ### - Vanilla
+]
+.right-column.center.middle[
+<img src="meditation.jpg" width="70%">
+]
+---
+.left-column[
+  ## Historie
+  ### - Vanilla
+  ### - Framework
+]
+.right-column[
+## HAML
+```haml
+!!!
+%html
+  %head
+    %title BoBlog
+    %meta{"http-equiv" => "Content-Type", :content => "text/html"}
+    %link{"rel" => "stylesheet", "href" => "main.css",
+          "type" => "text/css"}
+  %body
+    #header
+      %h1 BoBlog
+      %h2 Bobs Blog
+    #content
+      - @entries.each do |entry|
+        .entry
+          %h3.title= entry.title
+          %p.date= entry.posted.strftime("%A, %B %d, %Y")
+```
+## SASS
+```sass
+$font-stack:    Helvetica, sans-serif
+$primary-color: #333
 
+body
+  font: 100% $font-stack
+  color: $primary-color
+```
+]
+---
+.left-column[
+  ## Historie
+  ### - Vanilla
+  ### - Framework
+]
+.right-column[
+# Asset pipeline
+### CSS
+```css
+/**
+ * application-all.css
+ *
+ *= require_self
+ *= require_tree ./all
+ */
+```
+### Javascript
+```javascript
+//= require jquery
+//= require jquery_ujs
+//= require jquery-ui
+//= require_directory ./
+//= require_tree ./public
+```
+### ERB
+```erb
+<%= stylesheet_link_tag "application", media: "all" %>
+<%= javascript_include_tag "application" %>
+```
+]
+---
 # Syntaxe
-.pull-left.subtitle[
+.pull-left[
 ## Grunt
 
 ```javascript
 grunt.initConfig({
   pkg: grunt.file.readJSON('package.json'),
   jshint: {
-    src: [
+*    src: [
       'src/**/*.js',
       '!src/**/*.spec.js'],
     options: {
       jshintrc: '.jshintrc' }},
   concat: {
-    src: '<%= jshint.src %>',
-    dest: 'dist/<%= pkg.name %>.js' },
+*    src: '<%= jshint.src %>',
+*    dest: 'dist/<%= pkg.name %>.js' },
 });
 grunt.registerTask('default',
   ['jshint', 'concat']);
 ```
 ]
-.pull-right.subtitle[
+.pull-right[
 ## Gulp
 
 ```javascript
 var pkg = require('./package.json');
 gulp.task('default', function() {
-  gulp.src([
+*  gulp.src([
       'src/**/*.js',
       '!src/**/*.spec.js'])
     .pipe(jshint())
     .pipe(jshint.reporter('jshint-stylish'))
     .pipe(jshint.reporter('fail'))
     .pipe(concat(pkg.name + '.js'))
-    .pipe(gulp.dest('dist');
+*    .pipe(gulp.dest('dist');
 });
 ```
 ]
 
----
     </textarea>
     <script src="http://gnab.github.io/remark/downloads/remark-latest.min.js" type="text/javascript">
     </script>
     <script type="text/javascript">
-      var slideshow = remark.create();
+      var slideshow = remark.create({highlightStyle: 'github'});
     </script>
   </body>
 </html>
