@@ -1,0 +1,39 @@
+module.exports = function(grunt) {
+  grunt.initConfig({
+    jade: {
+      compile: {
+        options: {
+          client: false,
+          pretty: true
+        },
+        files: [
+          {
+            cwd: "templates",
+            src: "**/*.jade",
+            dest: "build/templates",
+            expand: true,
+            ext: ".html"
+          }
+        ]
+      }
+    },
+    coffee: {
+      compile: {
+        files: {
+          'build/app.js': "scripts/**/*.coffee"
+        }
+      }
+    },
+    watch: {
+      templates: {
+        files: ["**/*.jade"],
+        tasks: ['jade']
+      }
+    }
+  });
+  grunt.loadNpmTasks("grunt-contrib-jade");
+  grunt.loadNpmTasks("grunt-contrib-watch");
+  grunt.loadNpmTasks("grunt-contrib-coffee");
+  grunt.registerTask('compile', ['jade', 'coffee']);
+  grunt.registerTask('default', ['compile', 'watch']);
+};
