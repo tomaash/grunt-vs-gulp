@@ -340,16 +340,17 @@ $ npm install -g grunt-cli
 ## package.json
 ```javascript
 {
-    "name" : "SampleGrunt",
-    "version" : "0.1.0",
-    "author" : "Brandon Random",
+  "name" : "My Awesome Project",
+  "version" : "0.1.0",
+  "author" : "Brandon Random",
 
-    "devDependencies" : {
-        "grunt" : "~0.4.0",
-        "grunt-contrib-concat": "*",
-        "grunt-contrib-uglify": "*",
-        "grunt-contrib-watch": "*",
-    }
+  "devDependencies" : {
+    "grunt" : "~0.4.5",
+    "grunt-contrib-concat": "~0.5.0",
+    "grunt-contrib-uglify": "~0.5.1",
+    "grunt-contrib-watch": "~0.6.1",
+    "load-grunt-tasks": "~0.6.0"
+  }
 }
 ```
 ## Install packages
@@ -367,27 +368,26 @@ $ npm install
 ## Gruntfile.js
 ```javascript
 module.exports = function(grunt) {
+  // Load all grunt plugins
+  require('load-grunt-tasks')(grunt);
 
-    // All configuration goes here
-    grunt.initConfig({
-        // Read info from package file
-        pkg: grunt.file.readJSON('package.json'),
-        concat: {
-            dist: {
-                src: [
-                    'js/libs/*.js', // All JS in the libs folder
-                    'js/global.js'  // This specific file
-                ],
-                dest: 'js/build/production.js',
-            }
-        }
-    });
+  // Task configuration goes here
+  grunt.initConfig({
+    // Read info from package file
+    pkg: grunt.file.readJSON('package.json'),
+    concat: {
+      dist: {
+        src: [
+          'src/**/*.js',      // All JS sources
+          '!src/**/*.spec.js' // excluding tests
+        ],
+        dest: 'js/build/production.js',
+      }
+    }
+  });
 
-    // Load task from plug-in.
-    grunt.loadNpmTasks('grunt-contrib-concat');
-
-    // Register default command
-    grunt.registerTask('default', ['concat']);
+  // Register default task
+  grunt.registerTask('default', ['concat']);
 
 };
 ```
@@ -403,6 +403,7 @@ module.exports = function(grunt) {
 
 ```javascript
 module.exports = function(grunt) {
+  require('load-grunt-tasks')(grunt);
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
 *    concat: {
@@ -429,7 +430,7 @@ module.exports = function(grunt) {
       tasks: ['jshint', 'qunit']
     }
   });
-  grunt.loadNpmTasks('grunt-contrib-concat'); // other tasks omitted
+
   grunt.registerTask('test',['jshint','qunit']);
   grunt.registerTask('default',['jshint','qunit','concat','uglify']);
 };
@@ -456,21 +457,19 @@ class: grunt-gulp
 grunt.initConfig({
 *  jade: {
     compile: {
-      files: [
-        {
-          cwd: "templates",
-          src: "**/*.jade",
-          dest: "build/templates",
-          ext: ".html"
+      files: [{
+        cwd: 'src',
+        src: '**/*.jade',
+        dest: 'build/partials'
   }]}},
 *  coffee: {
     compile: {
       files: {
-        'build/app.js':"scripts/**/*.coffee"
+        'build/app.js':'scripts/**/*.coffee'
   }}},
 *  watch: {
     templates: {
-      files: ["**/*.jade"],
+      files: ['**/*.jade'],
       tasks: ['jade']
   }}});
 grunt.registerTask('compile',
@@ -488,9 +487,9 @@ var jade = require('gulp-jade');
 var coffee = require('gulp-jade');
 var concat = require('gulp-concat');
 *gulp.task('jade', function() {
-  gulp.src('pages/**/*.jade',{base:'./pages'})
+  gulp.src('src/**/*.jade', {base: 'src'})
   .pipe(jade())
-  .pipe(gulp.dest('build/pages'));
+  .pipe(gulp.dest('build/partials'));
 });
 *gulp.task('coffee', function() {
   gulp.src('./scripts/*.coffee')
@@ -500,7 +499,7 @@ var concat = require('gulp-concat');
 });
 gulp.task('compile', ['jade','coffee']);
 *gulp.task('watch', ['compile'], function() {
-  gulp.watch('pages/**/*.jade',['compile']);
+  gulp.watch('pages/**/*.jade', ['compile']);
 });
 gulp.task('default', ['watch']);
 ```
@@ -531,7 +530,7 @@ gulp.watch('src/**/*.js', ['test', 'compile']);
 .huge-text.move-bottom[
 ```javascript
 // Returns a readable stream
-gulp.src(['src/**/*.js', 'test/spec/**/*.js'])
+gulp.src(['src/**/*.js', '!src/**/*.spec.js'])
 ```
 ]
 ---
