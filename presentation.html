@@ -20,6 +20,9 @@
       .bigger-text {
         font-size: 1.5em;
       }
+      .huge-text .hljs {
+        font-size: 1.8em;
+      }
       .bigger-text li {
         padding-bottom: 0.5em;
       }
@@ -503,6 +506,160 @@ gulp.task('default', ['watch']);
 ```
 ]
 ---
+# gulp.task
+.huge-text.move-bottom[
+```javascript
+// Create task
+gulp.task('name', ['deps'], function(done) {
+
+  return stream || promise;
+  // ...or, call done()
+
+});
+```
+]
+---
+# gulp.watch
+.huge-text.move-bottom[
+```javascript
+// Runs tasks when files change
+gulp.watch('src/**/*.js', ['test', 'compile']);
+```
+]
+---
+# gulp.src
+.huge-text.move-bottom[
+```javascript
+// Returns a readable stream
+gulp.src(['src/**/*.js', 'test/spec/**/*.js'])
+```
+]
+---
+# gulp.dest
+.huge-text.move-bottom[
+```javascript
+// Returns a "through stream"
+gulp.src('src')
+  .pipe(...)
+  .pipe(gulp.dest('dist'));
+```
+]
+---
+class: center, middle
+# task, watch, src, dest
+.move-bottom-slight[
+<img src="gulp-expert.png">
+]
+---
+template: inverse
+# Let's get (our hands) dirty
+---
+class: center
+.move-top[
+# Le workflow diagrams
+]
+## Grunt
+<img width="70%" src="grunt-flow.png">
+## Gulp
+<img width="70%" src="gulp-flow.png">
+---
+.pull-left.move-top[
+## Grunt
+```javascript
+grunt.initConfig({
+  sass: {
+    dist: {
+      files: [{
+        cwd: 'app/styles',
+        src: '**/*.scss',
+        dest: '../.tmp/styles',
+        expand: true,
+        ext: '.css'
+      }]
+    }
+  },
+  autoprefixer: {
+    options: ['last 1 version'],
+    dist: {
+      files: [{
+        expand: true,
+        cwd: '.tmp/styles',
+        src: '{,*/}*.css',
+        dest: 'dist/styles'
+      }]
+    }
+  },
+  watch: {
+    styles: {
+      files: ['app/styles/{,*/}*.scss'],
+      tasks: ['sass:dist','autoprefixer:dist']
+    }
+  }
+});
+grunt.registerTask('default',
+  ['styles','watch']);
+```
+]
+.pull-right.move-top[
+## Gulp
+```javascript
+gulp.task('sass', function () {
+  gulp.src('app/styles/**/*.scss')
+    .pipe(sass())
+    .pipe(autoprefixer('last 1 version'))
+    .pipe(gulp.dest('dist/styles'));
+});
+gulp.task('default', function() {
+  gulp.run('sass');
+  gulp.watch('app/styles/**/*.scss',
+    function() {
+      gulp.run('sass');
+  });
+});
+```
+]
+---
+# Gulp future
+## Drop Orchestrator
+```javascript
+gulp.task('js', ['clean'], function() {...})
+gulp.task('css', ['clean'], function() {...})
+gulp.task('img', ['clean'], function() {...})
+gulp.task('compile', ['js','css', 'img']);
+gulp.task('watch', ['compile'], function() {...})
+gulp.task('default', ['watch']);
+```
+
+## Use Bach
+```javascript
+gulp.task('default',
+  gulp.series(
+    'clean',
+    gulp.parallel('js', 'css', 'img'),
+    'watch'
+  ));
+```
+---
+# Grunt future
+## We will do everything Gulp is doing...
+--
+ but worse
+.pull-left[
+```bash
+https://github.com/gruntjs/grunt-next
+```
+<img width="100%" src="grunt-repo-annotated.png">
+<img width="100%" src="grunt-poweredby-annotated.png">
+]
+.pull-right[
+<br>
+<img width="100%" src="grunt-repo-dead.png">
+]
+---
+
+
+
+
 class: bullets
 .pull-left[
 <img class="center" height="200px" src="grunt-logo.png">
@@ -511,10 +668,10 @@ class: bullets
 <img class="center" height="200px" src="gulp-logo.png">
 ]
 --
-.pull-left.bigger-text.move-bottom-slight[
+.pull-left.bigger-text[
 * Task runner
 ]
-.pull-right.bigger-text.move-bottom-slight[
+.pull-right.bigger-text[
 * Build system
 ]
 --
@@ -545,68 +702,17 @@ class: bullets
 .pull-right.bigger-text.move-top[
 * 700+ plugins
 ]
+--
+.pull-left.bigger-text.move-top[
+* Might be dead soon
+]
+.pull-right.bigger-text.move-top[
+* Bright future :)
+]
 ---
 class: center
-## Grunt workflow
-<img width="80%" src="grunt-flow.png">
-## Gulp workflow
-<img width="80%" src="gulp-flow.png">
-]
----
-.pull-left.move-top[
-## Grunt
-```javascript
-grunt.initConfig({
-*  jade: {
-    compile: {
-      files: [
-        {
-          cwd: "templates",
-          src: "**/*.jade",
-          dest: "build/templates",
-          ext: ".html"
-  }]}},
-*  coffee: {
-    compile: {
-      files: {
-        'build/app.js':"scripts/**/*.coffee"
-  }}},
-*  watch: {
-    templates: {
-      files: ["**/*.jade"],
-      tasks: ['jade']
-  }}});
-grunt.registerTask('compile',
-  ['jade', 'coffee']);
-grunt.registerTask('default',
-  ['compile', 'watch']);
-```
-]
-.pull-right.move-top[
-## Gulp
-
-```javascript
-var gulp = require('gulp');
-var jade = require('gulp-jade');
-var coffee = require('gulp-jade');
-var concat = require('gulp-concat');
-*gulp.task('jade', function() {
-  gulp.src('pages/**/*.jade',{base:'./pages'})
-  .pipe(jade())
-  .pipe(gulp.dest('build/pages'));
-});
-*gulp.task('coffee', function() {
-  gulp.src('./scripts/*.coffee')
-  .pipe(coffee({bare: true}))
-  .pipe(concat('app.js'))
-  .pipe(gulp.dest('./build'));
-});
-gulp.task('compile', ['jade','coffee']);
-*gulp.task('watch', ['compile'], function() {
-  gulp.watch('pages/**/*.jade',['compile']);
-});
-gulp.task('default', ['watch']);
-```
+.move-bottom[
+<img width="100%" src="gulp-winner-annotated.jpg">
 ]
     </textarea>
     <script src="http://gnab.github.io/remark/downloads/remark-latest.min.js" type="text/javascript">
