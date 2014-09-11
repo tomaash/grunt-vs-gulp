@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Title</title>
+    <title>Grunt vs. Gulp</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <style type="text/css">
       @import url(http://fonts.googleapis.com/css?family=Oswald);
@@ -22,6 +22,9 @@
       }
       .bigger-text li {
         padding-bottom: 0.5em;
+      }
+      .bullets ul {
+        margin-left: 2em;
       }
       .title {
         font-size: 4em;
@@ -72,8 +75,14 @@
       .move-left {
         margin-left: -7em;
       }
+      .move-right {
+        margin-left: 3em;
+      }
       .move-bottom {
         margin-top: 3em;
+      }
+      .move-bottom-slight {
+        margin-top: 2em;
       }
       .move-top {
         margin-top: -2em;
@@ -429,9 +438,7 @@ template: inverse
 ---
 class: mega-grunt
 # "Enterprise" Gruntfile
----
-class: mega-grunt
-# "Enterprise" Gruntfile
+--
 .bottom-right[
 <img src="doge-grunt.jpg">
 ]
@@ -496,27 +503,110 @@ gulp.task('default', ['watch']);
 ```
 ]
 ---
-.bigger-text[
+class: bullets
 .pull-left[
 <img class="center" height="200px" src="grunt-logo.png">
-.move-bottom[
-* Task runner
-* Configuration over code
-* Filesystem based
-* "Kitchen sink"
-* 3600+ plugins
-]
 ]
 .pull-right[
-<img class="center" height="200px"  src="gulp-logo.png">
-.move-bottom[
+<img class="center" height="200px" src="gulp-logo.png">
+]
+--
+.pull-left.bigger-text.move-bottom-slight[
+* Task runner
+]
+.pull-right.bigger-text.move-bottom-slight[
 * Build system
+]
+--
+.pull-left.bigger-text.move-top[
+* Configuration over code
+]
+.pull-right.bigger-text.move-top[
 * Code over configuration
+]
+--
+.pull-left.bigger-text.move-top[
+* Filesystem based
+]
+.pull-right.bigger-text.move-top[
 * Stream based
+]
+--
+.pull-left.bigger-text.move-top[
+* "Kitchen sink"
+]
+.pull-right.bigger-text.move-top[
 * Unix-like
+]
+--
+.pull-left.bigger-text.move-top[
+* 3600+ plugins
+]
+.pull-right.bigger-text.move-top[
 * 700+ plugins
 ]
+---
+class: center
+## Grunt workflow
+<img width="80%" src="grunt-flow.png">
+## Gulp workflow
+<img width="80%" src="gulp-flow.png">
 ]
+---
+.pull-left.move-top[
+## Grunt
+```javascript
+grunt.initConfig({
+*  jade: {
+    compile: {
+      files: [
+        {
+          cwd: "templates",
+          src: "**/*.jade",
+          dest: "build/templates",
+          ext: ".html"
+  }]}},
+*  coffee: {
+    compile: {
+      files: {
+        'build/app.js':"scripts/**/*.coffee"
+  }}},
+*  watch: {
+    templates: {
+      files: ["**/*.jade"],
+      tasks: ['jade']
+  }}});
+grunt.registerTask('compile',
+  ['jade', 'coffee']);
+grunt.registerTask('default',
+  ['compile', 'watch']);
+```
+]
+.pull-right.move-top[
+## Gulp
+
+```javascript
+var gulp = require('gulp');
+var jade = require('gulp-jade');
+var coffee = require('gulp-jade');
+var concat = require('gulp-concat');
+*gulp.task('jade', function() {
+  gulp.src('pages/**/*.jade',{base:'./pages'})
+  .pipe(jade())
+  .pipe(gulp.dest('build/pages'));
+});
+*gulp.task('coffee', function() {
+  gulp.src('./scripts/*.coffee')
+  .pipe(coffee({bare: true}))
+  .pipe(concat('app.js'))
+  .pipe(gulp.dest('./build'));
+});
+gulp.task('compile', ['jade','coffee']);
+*gulp.task('watch', ['compile'], function() {
+  gulp.watch('pages/**/*.jade',['compile']);
+});
+gulp.task('default', ['watch']);
+```
 ]
     </textarea>
     <script src="http://gnab.github.io/remark/downloads/remark-latest.min.js" type="text/javascript">
