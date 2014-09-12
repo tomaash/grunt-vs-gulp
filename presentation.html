@@ -100,6 +100,12 @@
         right: 0.5em;
       }
 
+      .top-right {
+        position: absolute;
+        top: 0.5em;
+        right: 0.5em;
+      }
+
       .pull-right ~ p {
         clear: both;
       }
@@ -515,7 +521,7 @@ grunt.registerTask('default',
 ```javascript
 var gulp = require('gulp');
 var jade = require('gulp-jade');
-var coffee = require('gulp-jade');
+var coffee = require('gulp-coffee');
 var concat = require('gulp-concat');
 *gulp.task('jade', function() {
   gulp.src('src/**/*.jade', {base: 'src'})
@@ -660,11 +666,12 @@ gulp.task('default', function() {
 ]
 
 .pull-right[
+
 ```javascript
 var gulp = require('gulp');
 var merge = require('merge-stream');
 var less = require('gulp-less');
-var autoprefixer = require('gulp-remember');
+var autoprefixer = require('gulp-autoprefixer');
 
 gulp.task('css', function(){
     return merge(
@@ -687,6 +694,7 @@ gulp.task('css', function(){
 ]
 
 .pull-right[
+
 ```javascript
 var gulp = require('gulp');
 var streamqueue = require('streamqueue');
@@ -707,6 +715,20 @@ gulp.task('css', function(){
   .pipe(gulp.dest('./css/'))});
 ```
 ]
+---
+# U NO LIKE writing Gulpfile? Gulp Fiction!
+<img width="100%" src="gulp-fiction.png">
+
+```javascript
+// Gulp Fiction Sample - created with Gulp Fiction
+var gulp = require("gulp");
+var concat = require("gulp-concat");
+gulp.task("default", [], function () {
+    gulp.src([{"path":"./src/**/*.js"},{"path":"./lib/**/*.js"}])
+        .pipe(concat("all.js"))
+        .pipe(gulp.dest("./build/"));
+});
+```
 ---
 class: bullets, bigger-text-slide
 # Gulp rewrite results
@@ -734,7 +756,10 @@ template: inverse
 .move-top[
 # Gulp future - v4.0
 ]
-## Drop Orchestrator
+```bash
+https://github.com/gulpjs/gulp/tree/4.0
+```
+### Drop Orchestrator
 ```javascript
 gulp.task('js', ['clean'], function() {...})
 gulp.task('css', ['clean'], function() {...})
@@ -744,7 +769,7 @@ gulp.task('watch', ['compile'], function() {...})
 gulp.task('default', ['watch']);
 ```
 
-## Use Bach
+### Use Bach
 ```javascript
 gulp.task('default',
   gulp.series(
@@ -754,10 +779,11 @@ gulp.task('default',
   ));
   // Want this feature right now? Use run-sequence
 ```
-* Optional pipe plumbing (on error behavior - log error or stop stream)
-* Filesystem sandboxing (vinyl-fs, in memory filesystem)
-* New sourcemap system (easier for plugin developers)
-
+* **Optional pipe plumbing** (on error behavior - log error or stop stream)
+* **Filesystem sandboxing** (vinyl-fs, in memory filesystem)
+* **New sourcemap system** (easier for plugin developers)
+--
+<img width="45%" class="top-right" src="gulp-repo.png">
 ---
 # Grunt future
 ## We will do everything Gulp is doing...
@@ -774,6 +800,13 @@ https://github.com/gruntjs/grunt-next
 <br>
 <img width="100%" src="grunt-repo-dead.png">
 ]
+--
+<img width="45%" class="bottom-right" src="trollface.png">
+???
+FAIL
+---
+template: inverse
+# OK, let's recap!
 ---
 class: bullets
 .pull-left[
@@ -818,9 +851,14 @@ class: bullets
 * Bright future :)
 ]
 ???
+Configuration over code:
+Enterprise Java, Spring, Ant, tuny XML -> God Object Antipattern
+
 Grunt je mrtvá evoluční větev, Gulp je budoucnost
 
-Můžeme s tím nesouhlasit, můžeme proti tomu protestovat, ale to je tak všechno, co s tím můžeme dělat.
+Více tasků: gulp plugin "grunt task runner"
+
+Můžeme s tím nesouhlasit, můžeme proti tomu protestovat, ale to je asi tak všechno, co s tím můžeme dělat.
 ---
 class: center
 .move-bottom[
