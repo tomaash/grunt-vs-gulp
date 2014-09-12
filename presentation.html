@@ -5,7 +5,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <style type="text/css">
       @import url(http://fonts.googleapis.com/css?family=Oswald);
-      @import url(http://fonts.googleapis.com/css?family=Roboto+Slab);
+      @import url(http://fonts.googleapis.com/css?family=Roboto+Slab:400,700);
       @import url(http://fonts.googleapis.com/css?family=Ubuntu+Mono);
 
       body { font-family: 'Roboto Slab'; }
@@ -17,6 +17,9 @@
       .remark-slide-content h1 { font-size: 2.5em; }
       .remark-slide-content h2 { font-size: 1.5em; }
       .remark-slide-content h3 { font-size: 1em; }
+      .bigger-text-slide li {
+        font-size: 1.5em;
+      }
       .bigger-text {
         font-size: 1.5em;
       }
@@ -153,6 +156,17 @@ Evoluce build systémů
 
 ]
 <img src="logo-socialbakers.jpg" width="30%">
+???
+Dobrý den, jmenuji se Tomáš Holas a pracuji ve společnosti Socialbakers na pozici vývojář evangelista.
+
+Tématem dnešního talku je vývoj v oblasti JavaScriptových build systémů.
+
+Podíváme se detailně na současné 2 největší hráče,
+
+ukážeme si krátkou případovou studii,
+
+a nakonec se pokusíme odhadnout, co nás asi čeká v budoucnosti.
+
 ---
 name: inverse
 layout: true
@@ -168,6 +182,12 @@ layout: false
 .right-column.center.middle[
 <img class="move-left" src="meditation.jpg" width="70%">
 ]
+???
+Za dávných časů, když byla země ještě mladá, se programátoři nacházeli ve stavu blažené nevědomosti.
+
+Psali čísté HTML, CSS, JS
+
+Jak to psali, tak to browser četl, a všechno fungovalo samo od sebe.
 ---
 .left-column[
   ## History
@@ -204,6 +224,9 @@ body
   color: $primary-color
 ```
 ]
+???
+Pak ale skupina nespokojených programátorů z Rails komunity si začala stěžovat.
+Že jsou zvyklí psát krásný a úsporný Ruby kód, a že HTML a CSS vůbec nejsou tak krásné.
 ---
 .left-column[
   ## History
@@ -242,6 +265,14 @@ exit 0
 ```
 
 ]
+???
+Tím skončila blažená éra, kdy napsaný kód fungoval bez jakéhokoliv post-procesingu
+
+A na scéně se začaly objevovat různé nástroje, které mají řešit
+
+tento převod z kódu z formátu, který se líbí programátorovi
+
+do formátu, který se líbí browseru
 ---
 .left-column[
   ## History
@@ -602,6 +633,9 @@ grunt.registerTask('default',
 .pull-right.move-top[
 ## Gulp
 ```javascript
+var sass = require('gulp-sass');
+var autoprefixer =
+  require('gulp-autoprefixer');
 gulp.task('sass', function () {
   gulp.src('app/styles/**/*.scss')
     .pipe(sass())
@@ -674,12 +708,32 @@ gulp.task('css', function(){
 ```
 ]
 ---
+class: bullets, bigger-text-slide
 # Gulp rewrite results
+&nbsp;
+--
+
+* Size: &nbsp; **60kb &rarr; 20kb**
+
+--
+
+* LOC: &nbsp; **1700 &rarr; 500**
+
+--
+
+* Build time: &nbsp; **60s &rarr; 30s**
+
+--
+
+* Cool factor: &nbsp; **Priceless**
+<img class="bottom-right" src="fck-yea.png">
 ---
 template: inverse
 # The Future
 ---
+.move-top[
 # Gulp future - v4.0
+]
 ## Drop Orchestrator
 ```javascript
 gulp.task('js', ['clean'], function() {...})
@@ -698,7 +752,12 @@ gulp.task('default',
     gulp.parallel('js', 'css', 'img'),
     'watch'
   ));
+  // Want this feature right now? Use run-sequence
 ```
+* Optional pipe plumbing (on error behavior - log error or stop stream)
+* Filesystem sandboxing (vinyl-fs, in memory filesystem)
+* New sourcemap system (easier for plugin developers)
+
 ---
 # Grunt future
 ## We will do everything Gulp is doing...
@@ -724,17 +783,10 @@ class: bullets
 <img class="center" height="200px" src="gulp-logo.png">
 ]
 --
-.pull-left.bigger-text[
-* Task runner
-]
-.pull-right.bigger-text[
-* Build system
-]
---
-.pull-left.bigger-text.move-top[
+.pull-left.bigger-text.move-bottom-slight[
 * Configuration over code
 ]
-.pull-right.bigger-text.move-top[
+.pull-right.bigger-text.move-bottom-slight[
 * Code over configuration
 ]
 --
@@ -760,7 +812,7 @@ class: bullets
 ]
 --
 .pull-left.bigger-text.move-top[
-* Might be dead soon
+* On decline
 ]
 .pull-right.bigger-text.move-top[
 * Bright future :)
